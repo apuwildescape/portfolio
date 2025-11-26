@@ -192,21 +192,40 @@
             alert("This is last!");
             console.log("✅ This is the LAST SVG clicked!");
             const username = "kai.xuan.chen";
-            const instagramUrl = `https://www.instagram.com/${username}/`;
+            const instagramWebUrl = `https://www.instagram.com/${username}/`; // Web URL for fallback
+            const instagramAppUrl = `instagram://user?username=${username}`; // Deep link for Instagram app
 
-            // Try to open the Instagram app first (deep linking for mobile)
-            const instagramAppUrl = `instagram://user?username=${username}`;
+            // Check if the user is on a mobile device
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(
+              navigator.userAgent
+            );
 
-            // Attempt to open Instagram app, fall back to web URL if not installed
+            if (!isMobile) {
+              // If not on mobile, open the web URL directly (desktop behavior)
+              window.open(instagramWebUrl, "_blank");
+              return;
+            }
+
+            // Try opening Instagram app via deep link (for mobile users)
             const iframe = document.createElement("iframe");
             iframe.style.display = "none";
             iframe.src = instagramAppUrl;
 
+            // Append iframe to the body to try opening Instagram app
             document.body.appendChild(iframe);
+
+            // Show fallback message if Instagram app doesn't open within 1000ms
             setTimeout(function () {
+              // Remove iframe
               document.body.removeChild(iframe);
-              window.open(instagramUrl, "_blank"); // Fallback to browser if app is not installed
-            }, 500); // Wait for app to open, then fallback
+
+              // Show fallback message for the user
+              document.getElementById("fallbackMessage").style.display =
+                "block";
+
+              // Set the link for manual opening in browser
+              document.getElementById("manualLink").href = instagramWebUrl;
+            }, 1000); // Timeout duration (1000ms = 1 second)
           } else if (foundSecondLast) {
             alert("This is second last!");
             console.log("✅ This is the SECOND LAST SVG clicked!");
