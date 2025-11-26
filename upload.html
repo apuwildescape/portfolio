@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG Upload</title>
+  </head>
+  <body>
+    <input type="file" id="upload" accept=".svg" />
+    <br /><br />
+    <div id="imagePreview"></div>
+    <br />
+    <button id="submitBtn">Submit</button>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        updateDoc,
+        collection,
+        addDoc,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDsohhSTCZmSXeD33DtHG2NE5rz7EwxjPo",
+        authDomain: "apuwildescape-ce91d.firebaseapp.com",
+        projectId: "apuwildescape-ce91d",
+        storageBucket: "apuwildescape-ce91d.firebasestorage.app",
+        messagingSenderId: "108602929920",
+        appId: "1:108602929920:web:55303324ea9bc0c15cb9e5",
+        measurementId: "G-X0DQ7N23Y5",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      
+      const userDocRef = doc(db, "users", "user1"); // reference to user1 document
+      const svgChunksCol = collection(userDocRef, "svg_chunks"); // svg_chunks subcollection
+
+      const upload = document.getElementById("upload");
+      const submitBtn = document.getElementById("submitBtn");
+      const imgPre = document.getElementById("imagePreview");
+
+      let svgMarkup = "";
+
+      upload.addEventListener("change", () => {
+        const file = upload.files[0];
+        if (!file) return;
+
+        if (!file.name.endsWith(".svg")) {
+          alert("Please upload an SVG file!");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          svgMarkup = reader.result;
+          imgPre.innerHTML = svgMarkup;
+        };
+        reader.readAsText(file);
+      });
+
+      submitBtn.addEventListener("click", async () => {
+        if (!svgMarkup) {
+          alert("No SVG selected!");
+          return;
+        }
+
+        try {
+          // Firestore max doc size ~1 MB, split if needed
+          const CHUNK_SIZE = 900000; // ~900 KB per chunk
+          const totalChunks = Math.ceil(svgMarkup.length / CHUNK_SIZE);
+
+          // Create or update the user document (for user1) if needed
+          await setDoc(userDocRef, { createdAt: new Date() }, { merge: true });
+
+          // Save chunks in the 'svg_chunks' subcollection
+          for (let i = 0; i < totalChunks; i++) {
+            const chunk = svgMarkup.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+            await addDoc(svgChunksCol, {
+              part: i,
+              chunk,
+              createdAt: new Date(),
+            });
+          }
+
+          alert("SVG saved in collection!");
+        } catch (err) {
+          console.error("Error saving SVG:", err);
+        }
+      });
+    </script>
+  </body>
+</html>

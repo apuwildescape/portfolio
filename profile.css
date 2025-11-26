@@ -1,0 +1,44 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  position: relative; /* This ensures that the icon can be layered on top */
+  height: 100%;
+  width: 100%;
+}
+
+/* Make SVG fill entire viewport */
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.icon {
+  display: flex;
+  position: absolute;
+  z-index: 10000;
+  top: 77.5%; /* Adjust vertical positioning of icons */
+  left: 16%;  /* Center horizontally */
+  transform: translateX(-50%); /* Properly center horizontally */
+  justify-content: center; /* Align icons in the center */
+  gap: 20px; /* Space between icons */
+}
+
+.fa-book, .fa-instagram {
+  font-size: 35px;
+  color: #ffffff;
+  transition: transform 0.3s ease; /* Smooth scaling effect */
+}
+
+.fa-book:hover, .fa-instagram:hover {
+  cursor: pointer;
+}
