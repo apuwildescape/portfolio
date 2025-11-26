@@ -7,9 +7,10 @@ body {
 }
 
 .container {
-  position: relative; /* This ensures that the icon can be layered on top */
+  position: relative;
   height: 100%;
   width: 100%;
+  background-color: black;
 }
 
 /* Make SVG fill entire viewport */
@@ -22,23 +23,135 @@ svg {
   display: block;
 }
 
+/* Default position and size for large screens (Desktops) */
 .icon {
   display: flex;
-  position: absolute;
+  position: fixed;
   z-index: 10000;
-  top: 77.5%; /* Adjust vertical positioning of icons */
-  left: 16%;  /* Center horizontally */
-  transform: translateX(-50%); /* Properly center horizontally */
-  justify-content: center; /* Align icons in the center */
-  gap: 20px; /* Space between icons */
+  top: 89%;
+  left: 37%;
+  transform: translateX(-50%);
+  justify-content: center;
+  gap: 20px;
 }
 
 .fa-book, .fa-instagram {
-  font-size: 35px;
+  font-size: 60px;
   color: #ffffff;
-  transition: transform 0.3s ease; /* Smooth scaling effect */
+  transition: transform 0.3s ease;
 }
 
-.fa-book:hover, .fa-instagram:hover {
-  cursor: pointer;
+/* Small Mobile (<375px) */
+@media (max-width: 374px) {
+  .icon {
+    top: 82% !important;
+    left: 18% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 35px !important;
+  }
 }
+
+/* Mobile (375px) */
+@media (max-width: 375px) {
+  .icon {
+    top: 84% !important;
+    left: 17% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 35px !important;
+  }
+}
+
+/* Mobile (375px to 414px) */
+@media (min-width: 375px) and (max-width: 414px) {
+  .icon {
+    top: 83.5% !important;
+    left: 18% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 40px !important;
+  }
+}
+
+/* Large Mobile / Phablets (480px to 600px) */
+@media (min-width: 480px) and (max-width: 600px) {
+  .icon {
+    top: 88% !important;
+    left: 16% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 50px !important;
+  }
+}
+
+/* Small Tablets (600px to 768px) */
+@media (min-width: 600px) and (max-width: 768px) {
+  .icon {
+    top: 89% !important;
+    left: 21% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 60px !important;
+  }
+}
+
+/* Standard Tablets (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .icon {
+    top: 89% !important;
+    left: 20% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 80px !important;
+  }
+}
+
+/* Laptops / Small Desktops (1024px to 1366px) */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .icon {
+    top: 89% !important;
+    left: 36% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 60px !important;
+  }
+}
+
+/* Large Desktops (1366px to 1920px) */
+@media (min-width: 1366px) and (max-width: 1920px) {
+  .icon {
+    top: 89% !important;
+    left: 37.6% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 60px !important;
+  }
+}
+
+/* Ultra-Wide Desktops (1920px and above) */
+@media (min-width: 1920px) {
+  .icon {
+    top: 89% !important;
+    left: 33% !important;
+  }
+
+  .fa-book, .fa-instagram {
+    font-size: 80px !important;
+  }
+}
+
+
+
+
+
+
+
