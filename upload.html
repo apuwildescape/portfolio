@@ -5,6 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SVG Upload</title>
     <style>
+      /* General Body Styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Full viewport height */
+        box-sizing: border-box;
+      }
+
+      /* Container for the form */
+      .container {
+        display: flex;
+        flex-direction: column; /* Ensures elements are stacked vertically */
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        padding: 30px;
+        text-align: center;
+      }
+
+      /* Title */
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      /* Input fields */
+      input[type="text"],
+      input[type="file"] {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 15px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      /* Input: focus effect */
+      input[type="text"]:focus,
+      input[type="file"]:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      /* Submit Button */
+      button {
+        width: 100%;
+        padding: 14px;
+        font-size: 18px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Submit Button Hover Effect */
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      /* Disabled Submit Button */
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
       /* Loading Overlay */
       #loadingOverlay {
         position: fixed;
@@ -19,6 +95,7 @@
         z-index: 9999;
       }
 
+      /* Loader Spinner */
       #loadingOverlay .loader {
         border: 8px solid #f3f3f3;
         border-top: 8px solid #3498db;
@@ -36,19 +113,44 @@
           transform: rotate(360deg);
         }
       }
+
+      /* Image Preview */
+      #imagePreview {
+        margin-top: 20px;
+        max-width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: center;
+      }
+
+      #imagePreview svg {
+        max-width: 90%;
+        height: auto;
+      }
     </style>
   </head>
   <body>
+    <!-- Container for Form -->
+    <div class="container">
+      <h1>Upload Your SVG</h1>
+
+      <!-- User Number Input -->
+      <input type="text" id="userNumber" placeholder="Enter User Number" />
+
+      <!-- File Upload -->
+      <input type="file" id="upload" accept=".svg" />
+
+      <!-- Image Preview -->
+      <div id="imagePreview"></div>
+
+      <!-- Submit Button -->
+      <button id="submitBtn" disabled>Submit</button>
+    </div>
+
     <!-- Loading Overlay -->
     <div id="loadingOverlay">
       <div class="loader"></div>
     </div>
-
-    <input type="file" id="upload" accept=".svg" />
-    <br /><br />
-    <div id="imagePreview"></div>
-    <br />
-    <button id="submitBtn">Submit</button>
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -72,9 +174,8 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
-      const userDocRef = doc(db, "users", "user2"); // reference to user1 document
-      const svgChunksCol = collection(userDocRef, "svg_chunks"); // svg_chunks subcollection
-
+      // DOM elements
+      const userNumberInput = document.getElementById("userNumber");
       const upload = document.getElementById("upload");
       const submitBtn = document.getElementById("submitBtn");
       const imgPre = document.getElementById("imagePreview");
@@ -91,6 +192,16 @@
       function hideLoading() {
         loadingOverlay.style.display = "none";
       }
+
+      // Event listener for user input (numeric validation)
+      userNumberInput.addEventListener("input", () => {
+        // Allow only numeric input (using regex to match numbers)
+        const value = userNumberInput.value;
+        const isValidNumber = /^[0-9]+$/.test(value);
+
+        // Enable or disable the submit button based on valid input
+        submitBtn.disabled = !isValidNumber;
+      });
 
       upload.addEventListener("change", () => {
         const file = upload.files[0];
@@ -115,19 +226,25 @@
           return;
         }
 
+        // Get the user number from input field
+        const userNumber = userNumberInput.value;
+
         try {
           showLoading(); // Show loading overlay
 
           const CHUNK_SIZE = 900000; // ~900 KB per chunk
           const totalChunks = Math.ceil(svgMarkup.length / CHUNK_SIZE);
 
-          // Create or update the user document (for user1) if needed
+          // Create or update the user document dynamically based on user number
+          const userDocRef = doc(db, "users", `user${userNumber}`); // Using the user number in the doc path
+
+          // Create or update the user document
           await setDoc(userDocRef, { createdAt: new Date() }, { merge: true });
 
           // Upload each chunk individually
           for (let i = 0; i < totalChunks; i++) {
             const chunk = svgMarkup.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
-            const chunkRef = doc(svgChunksCol, `${i}`); // Specify chunk ID
+            const chunkRef = doc(userDocRef, "svg_chunks", `${i}`); // Specify chunk ID
             await setDoc(chunkRef, {
               part: i,
               chunk,
@@ -138,9 +255,20 @@
           alert("SVG saved in collection!");
         } catch (err) {
           console.error("Error saving SVG:", err);
-          alert("There was an error uploading the SVG. Please try again later.");
+          alert(
+            "There was an error uploading the SVG. Please try again later."
+          );
         } finally {
           hideLoading(); // Hide loading overlay
+
+          // Clear the form inputs and reset UI
+          userNumberInput.value = ""; // Clear the user number input field
+          upload.value = ""; // Reset the file input (clears the file selection)
+          svgMarkup = ""; // Clear the SVG markup
+          imgPre.innerHTML = ""; // Clear the image preview area
+          submitBtn.disabled = true; // Disable the submit button again until valid input
+
+          // Optionally, you can reset any other UI states you have (e.g., remove any error messages)
         }
       });
     </script>
