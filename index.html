@@ -6,16 +6,119 @@
     <title>Portfolio</title>
 
     <link rel="stylesheet" href="./profile.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Full viewport height */
+        box-sizing: border-box;
+      }
+
+      /* Container for the form */
+      .container {
+        display: flex;
+        flex-direction: column; /* Ensures elements are stacked vertically */
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        padding: 30px;
+        text-align: center;
+        justify-content: center;
+      }
+
+      /* Title */
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      /* Input fields */
+      input[type="text"] {
+        width: 100%;
+        padding: 12px 16px;
+        margin-bottom: 15px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      /* Input: focus effect */
+      input[type="text"]:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      /* Submit Button */
+      button {
+        width: 100%;
+        padding: 14px;
+        font-size: 18px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Submit Button Hover Effect */
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      /* Disabled Submit Button */
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-      <div class="icon">
-      </div>
+      <!-- <div class="icon"></div>
       <div id="img">
-        <div id="portfolio-container">
-        </div>
-      </div>
+        <div id="portfolio-container"></div>
+      </div> -->
+      <h1>Go to portfolio</h1>
+      <input type="text" placeholder="Enter User ID" id="textBox" />
+      <button id="Btn" disabled>Go</button><br><br>
+      <button id="insertBtn">Insert insta username</button>
     </div>
-    <script type="module" src="./profile.js"></script>
+    <!-- <script type="module" src="./profile.js"></script> -->
+    <script type="module">
+      import { insertUsername } from "./igList.js";
+
+      const textBox = document.getElementById("textBox");
+      const Btn = document.getElementById("Btn");
+      const insertBtn = document.getElementById("insertBtn");
+
+      textBox.addEventListener("input", () => {
+        // Allow only numeric input (using regex to match numbers)
+        const value = textBox.value;
+        const isValidNumber = /^[0-9]+$/.test(value);
+
+        // Enable or disable the submit button based on valid input
+        Btn.disabled = !isValidNumber;
+      });
+
+      Btn.addEventListener("click", () => {
+        const value = textBox.value;
+        window.location.href = `./portfolio.html?id=${value}`;
+      });
+
+      insertBtn.addEventListener("click", async () => {
+        console.log("Running...");
+        await insertUsername();
+      });
+    </script>
   </body>
 </html>
