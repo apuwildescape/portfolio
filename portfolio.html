@@ -204,7 +204,7 @@
             const isDesktop = !isMobile;
 
             if (isDesktop) {
-              // On Desktop (Chrome, Safari, etc.), open the Instagram profile in the browser
+              // On Desktop (Chrome, Safari, etc.), open the Instagram profile in a new tab
               window.open(instagramWebUrl, "_blank");
               return;
             }
@@ -218,14 +218,15 @@
               // Append iframe to try to trigger the deep link (for Instagram app)
               document.body.appendChild(iframe);
 
-              // Timeout to detect if Instagram app opens, fallback to web URL
+              // Timeout to detect if Instagram app opens, fallback to web URL in a new tab
               setTimeout(function () {
                 document.body.removeChild(iframe); // Remove iframe after timeout
 
-                // If the app didn't open, fallback to the web URL
-                window.location.href = instagramWebUrl;
+                // If the app didn't open, open the web URL in a new tab
+                window.open(instagramWebUrl, "_blank");
               }, 1500);
             }
+            
           } else if (foundSecondLast) {
             alert("This is second last!");
             console.log("✅ This is the SECOND LAST SVG clicked!");
