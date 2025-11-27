@@ -210,24 +210,22 @@
             }
 
             // For mobile devices (iOS or Android)
-            const iframe = document.createElement("iframe");
-            iframe.style.display = "none";
-            iframe.src = instagramAppUrl;
+            if (isMobile) {
+              const iframe = document.createElement("iframe");
+              iframe.style.display = "none";
+              iframe.src = instagramAppUrl;
 
-            // Append iframe to try to trigger the deep link (for Instagram app)
-            document.body.appendChild(iframe);
+              // Append iframe to try to trigger the deep link (for Instagram app)
+              document.body.appendChild(iframe);
 
-            // Timeout to detect if Instagram app opens, fallback to web URL
-            setTimeout(function () {
-              document.body.removeChild(iframe); // Remove iframe after timeout
+              // Timeout to detect if Instagram app opens, fallback to web URL
+              setTimeout(function () {
+                document.body.removeChild(iframe); // Remove iframe after timeout
 
-              // Show the fallback message if the app didn't open
-              document.getElementById("fallbackMessage").style.display =
-                "block";
-
-              // Set the link for manual opening in the browser
-              document.getElementById("manualLink").href = instagramWebUrl;
-            }, 1500);
+                // If the app didn't open, fallback to the web URL
+                window.location.href = instagramWebUrl;
+              }, 1500);
+            }
           } else if (foundSecondLast) {
             alert("This is second last!");
             console.log("✅ This is the SECOND LAST SVG clicked!");
