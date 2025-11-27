@@ -222,8 +222,8 @@
               setTimeout(function () {
                 document.body.removeChild(iframe); // Remove iframe after timeout
 
-                // If the app didn't open, open the web URL in a new tab
-                window.open(instagramWebUrl, "_blank");
+                // If the app didn't open, fallback to the web URL
+                window.location.href = instagramWebUrl;
               }, 1500);
             }
             
