@@ -25,10 +25,27 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const usernameLists = {
-  1: "kai.xuan.chen",
-  2: "l.c.w._0213",
-  3: "kjiajian_7",
-};
+    1: "ycheng_1221___",
+    2: "c21mva31",
+    3: "apuclcs_apuwildescape25",
+    4: "Alyna_0528",
+    5: "kaienyhip._",
+    6: "kj.w0ng",
+    7: "chan.j.w",
+    8: "apuclcs_apuwildescape25", // appears twice in your list
+    9: "wendy_lim_5560",
+    10: "erictou0214",
+    11: "chenxuqnyu",
+    12: "xy1711",
+    13: "jennifer_24jen",
+    14: "kaishen0123",
+    15: "enyee__3",
+    16: "lijingwei2727",
+    17: "suang.l",
+    18: "Cfm_041029",
+    19: "iris.y___",
+  };
+  
 
 export async function insertUsername() {
   try {

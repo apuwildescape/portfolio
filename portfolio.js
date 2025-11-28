@@ -85,7 +85,8 @@ async function setupSVGInteractions(svgItem) {
     : null;
   console.log("Second g[clip-path] (parent of target groups):", secondClipPathG);
 
-  secondClipPathG = document.querySelector(".svg-item svg g[clip-path] g[transform] g[clip-path]");
+//   secondClipPathG = document.querySelector(".svg-item svg g[clip-path] g[transform] g[clip-path]");
+secondClipPathG = document.querySelector(".svg-item svg");
 
   let lastClipG = null;
   let secondLastClipG = null;
