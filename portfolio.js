@@ -191,7 +191,8 @@ secondClipPathG = document.querySelector(".svg-item svg");
         }, 1500);
       }
     } else if (foundSecondLast) {
-      alert("This is second last!");
+    //   alert("This is second last!");
+    location.href="https://heyzine.com/flip-book/67223f0f89.html"
       console.log("✅ This is the SECOND LAST SVG clicked!");
     } else {
       console.log("Clicked somewhere else in the SVG");
