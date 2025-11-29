@@ -206,6 +206,7 @@ async function init() {
     await loadSVG(userID); // Load SVG for that user
   } else {
     alert("User ID is missing in the URL.");
+    location.href="./index.html";
   }
 }
 
